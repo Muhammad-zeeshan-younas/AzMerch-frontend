@@ -14,12 +14,13 @@ function CustomModal({ isOpen = false, closeModal, children }: Props) {
     left: "50%",
     transform: "translate(-50%, -50%)",
     borderRadius: "5px",
-    width: 400,
+    width: { sx: 350, md: 400 },
     bgcolor: "background.paper",
     boxShadow: 24,
     pt: 4,
     px: 4,
     pb: 3,
+    minWidth: { sx: 350, md: 400, lg: 500 },
   };
 
   return (
@@ -29,7 +30,14 @@ function CustomModal({ isOpen = false, closeModal, children }: Props) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={{ ...style, minWidth: 500 }}>{children}</Box>
+      <Box
+        sx={{
+          ...style,
+        }}
+        className="w-[350px]"
+      >
+        {children}
+      </Box>
     </Modal>
   );
 }

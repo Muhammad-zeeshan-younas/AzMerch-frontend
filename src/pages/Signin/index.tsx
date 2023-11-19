@@ -1,7 +1,27 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import React from "react";
+import userContext from "../../utils/apis/userContext";
+import { TSigninInterface } from "../../types/SigninType";
+import { toast } from "react-toastify";
+import { CatchingPokemon } from "@mui/icons-material";
 
 function Signin() {
+  const [formState, setFormState] = React.useState<TSigninInterface>({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await userContext.signin(formState);
+
+      if (!response) return;
+      toast.success("You are now logged in.");
+      console.log(response.data.user);
+    } catch (error) {}
+  };
+
   return (
     <React.Fragment>
       <Typography
@@ -13,13 +33,18 @@ function Signin() {
       >
         Sign in
       </Typography>
-      <form className="grid gap-4 px-4 py-3">
+      <form onSubmit={handleSubmit} className="grid gap-4 py-3">
         <Grid>
           <TextField
             className="w-full"
             variant="filled"
             label="Username"
+            required
             type="Email"
+            value={formState.email}
+            onChange={(event) => {
+              setFormState({ ...formState, email: event?.target.value });
+            }}
             name="username"
           />
         </Grid>
@@ -27,7 +52,12 @@ function Signin() {
           <TextField
             className="w-full"
             label="Password"
+            required
             variant="filled"
+            value={formState.password}
+            onChange={(event) => {
+              setFormState({ ...formState, password: event?.target.value });
+            }}
             name="password"
             type="password"
           />
@@ -36,7 +66,8 @@ function Signin() {
           <Button
             variant="contained"
             fullWidth
-            sx={{ backgroundColor: "#101920" }}
+            sx={{ backgroundColor: "#101920 !important" }}
+            type="submit"
           >
             sign in
           </Button>

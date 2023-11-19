@@ -92,13 +92,10 @@ function Navbar() {
     <>
       <AppBar
         position="static"
+        color="default"
         sx={{
-          backgroundColor: "#101920",
           width: "full",
-          maxWidth: "lg",
-          borderRadius: "40px",
           margin: "auto",
-          marginTop: ".75rem",
           marginBottom: ".75rem",
         }}
         elevation={1}
@@ -141,12 +138,12 @@ function Navbar() {
                     key={label}
                     sx={{
                       my: 2,
-                      color: `${isLinkActive(path) ? "#F7B900" : "white"}`,
+                      color: `black`,
                       padding: ".65rem",
                       display: "block",
                       textDecoration: "none",
                       borderBottom: `${
-                        isLinkActive(path) ? "2px solid #F7B900" : ""
+                        isLinkActive(path) ? "2px solid black" : ""
                       }`,
                     }}
                   >
@@ -170,7 +167,7 @@ function Navbar() {
               <Button
                 name="sign-in"
                 sx={{
-                  backgroundColor: "#F7B900 !important",
+                  backgroundColor: "#101920 !important",
                   borderRadius: "6px",
                   fontSize: { xs: ".75rem", md: ".9rem" },
                 }}
