@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import userContxt from "../../utils/apis/userContext";
 import { toast } from "react-toastify";
 import { TSignupInterface } from "../../types/SignupType";
-import CustomDropzone from "../../components/Dropzone/Dropze";
+import CustomDropzone from "../../components/Dropzone/Dropzone";
 
 type Props = {};
 
@@ -13,17 +13,23 @@ function Signup({}: Props) {
     email: "",
     password: "",
   });
-  const fileRef = useRef<FileList | null>(null);
+
+  const [file, setFile] = useState<FileList | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const formData = new FormData();
+    formData.append("username", formState.username);
+    formData.append("email", formState.email);
+    formData.append("password", formState.password);
+    if (file) {
+      formData.append("avatar", file[0]);
+    }
+
     try {
-      await userContxt
-        .signup({
-          ...formState,
-          avatar: fileRef.current ? fileRef.current[0] : undefined,
-        })
-        .then((response) => toast.success("Congrats! You are now registered."));
+      const response = await userContxt.signup(formData);
+      if (!response) throw Error;
+      toast.success("Congrats! You are now registered.");
     } catch (err) {}
   };
 
@@ -81,7 +87,7 @@ function Signup({}: Props) {
             }
           />
         </Grid>
-        <CustomDropzone fileRef={fileRef} />
+        <CustomDropzone files={file} setFiles={setFile} />
 
         <Box display="flex" gap=".5rem" justifyContent="end">
           <Button

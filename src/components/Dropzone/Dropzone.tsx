@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from "react";
 import CollectionsIcon from "@mui/icons-material/Collections";
-import { CancelOutlined } from "@mui/icons-material";
+import { Cancel, CancelOutlined } from "@mui/icons-material";
 
 type DropzoneProps = {
-  fileRef: React.MutableRefObject<FileList | null>;
+  files: FileList | null;
+  setFiles: React.Dispatch<React.SetStateAction<FileList | null>>;
 };
 
-const CustomDropzone: React.FC<DropzoneProps> = ({ fileRef }) => {
+const CustomDropzone: React.FC<DropzoneProps> = ({ files, setFiles }) => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -28,9 +29,8 @@ const CustomDropzone: React.FC<DropzoneProps> = ({ fileRef }) => {
 
   const handleFiles = (files: FileList | null) => {
     if (files) {
-      fileRef.current = files;
+      setFiles(files);
 
-      // Assuming you want to display the first image if multiple files are selected
       const firstImage = files[0];
 
       if (firstImage) {
@@ -43,10 +43,10 @@ const CustomDropzone: React.FC<DropzoneProps> = ({ fileRef }) => {
       }
     }
   };
-  const removeFile = () => {
-    setImageSrc(null);
 
-    fileRef.current = null;
+  const removeFiles = () => {
+    setImageSrc(null);
+    setFiles(null);
   };
 
   return (
@@ -66,9 +66,10 @@ const CustomDropzone: React.FC<DropzoneProps> = ({ fileRef }) => {
             style={{ maxWidth: "100%", maxHeight: "100%" }}
           />
 
-          <CancelOutlined
-            className="absolute top-0 right-0 bg-white rounded-full hover:scale-105 active:scale-95 cursor-pointer"
-            onClick={removeFile}
+          <Cancel
+            sx={{ color: "red" }}
+            className="absolute -top-3 -right-4 rounded-full hover:scale-105 active:scale-95 cursor-pointer"
+            onClick={removeFiles}
           />
         </>
       ) : (

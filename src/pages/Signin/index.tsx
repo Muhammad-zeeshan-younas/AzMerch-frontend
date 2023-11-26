@@ -18,7 +18,6 @@ function Signin() {
 
       if (!response) return;
       toast.success("You are now logged in.");
-      console.log(response.data.user);
     } catch (error) {}
   };
 

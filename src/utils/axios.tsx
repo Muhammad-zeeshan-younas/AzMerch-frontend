@@ -12,9 +12,6 @@ const throwError = (response: any) => {
 
 const axiosClient = axios.create({
   baseURL: config().backend_url,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 const checkResponseStatus = (response: any, error: boolean = false) => {

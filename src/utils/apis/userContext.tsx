@@ -3,12 +3,9 @@ import axiosClient from "../axios";
 import { TSigninInterface } from "../../types/SigninType";
 import { TSignupInterface } from "../../types/SignupType";
 
-const signup = async (user: TSignupInterface) => {
+const signup = async (user: any) => {
   try {
-    const response = await axiosClient.post(
-      "/user/registration",
-      JSON.stringify(user)
-    );
+    const response = await axiosClient.post("/user/registration", user);
     return response;
   } catch (err) {}
 };
