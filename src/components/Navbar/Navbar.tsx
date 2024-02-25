@@ -125,6 +125,7 @@ function Navbar() {
             avatar: "",
           })
         );
+        localStorage.removeItem("accessToken");
         handleCloseUserMenu();
       },
     },
