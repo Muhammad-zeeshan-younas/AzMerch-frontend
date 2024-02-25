@@ -1,13 +1,15 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import userContxt from "../../utils/apis/userContext";
 import { toast } from "react-toastify";
 import { TSignupInterface } from "../../types/SignupType";
 import CustomDropzone from "../../components/Dropzone/Dropzone";
 
-type Props = {};
+type Props = {
+  setTabValue: Dispatch<SetStateAction<string>>;
+};
 
-function Signup({}: Props) {
+function Signup({ setTabValue }: Props) {
   const [formState, setFormState] = useState<TSignupInterface>({
     username: "",
     email: "",
@@ -30,6 +32,7 @@ function Signup({}: Props) {
       const response = await userContxt.signup(formData);
       if (!response) throw Error;
       toast.success("Congrats! You are now registered.");
+      setTabValue("1");
     } catch (err) {}
   };
 

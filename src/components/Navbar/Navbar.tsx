@@ -7,8 +7,8 @@ import {
   closeModal,
   selectModal,
 } from "../../Redux/reducers/slices/modalSlices";
+import { cart } from "../../Redux/reducers/slices/cartSlice";
 import {
-  Link,
   AppBar,
   Box,
   Toolbar,
@@ -20,6 +20,9 @@ import {
   Tooltip,
   Button,
   Tab,
+  MenuItem,
+  ListItemText,
+  Badge,
 } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -28,14 +31,18 @@ import Sidebar from "../Sidebar/Sidebar";
 import CustomModal from "../Modal/Modal";
 import Signin from "../../pages/Signin";
 import Signup from "../../pages/Signup";
+import { config } from "../../utils/config/config";
+import { useNavigate } from "react-router-dom";
+import { ShoppingCartCheckout } from "@mui/icons-material";
+import CustomCart from "../Cart";
+import userContxt from "../../utils/apis/userContext";
+import { setUser, user } from "../../Redux/reducers/slices/userSlice";
+import { UserState } from "../../types/userType";
 
 const pages = [
   { label: "Home", path: "/" },
   { label: "Products", path: "/products" },
-  { label: "Contacts", path: "/contacts" },
 ];
-
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
   const theme = createTheme({
@@ -47,19 +54,38 @@ function Navbar() {
   });
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("1");
+  const [isCartVisible, setIsCartVisible] = React.useState<boolean>(false);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
 
+  const LoggedinUser = useSelector(user).isLoggedIn;
+  const User = useSelector(user);
+  const Cart = useSelector(cart);
+  const isModalOpen = useSelector(selectModal);
+  const dispatch = useDispatch();
   const currentRoute = window.location.pathname;
+
+  const navigate = useNavigate();
 
   const isLinkActive = (href: string) => {
     return currentRoute === href;
   };
 
+  const handleLogout = () => {};
+
+  const handleCartOpen = () => {
+    setIsCartVisible(true);
+  };
+
+  const handleCartClose = () => {
+    setIsCartVisible(false);
+  };
+
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -76,10 +102,6 @@ function Navbar() {
     setOpen(false);
   };
 
-  const isModalOpen = useSelector(selectModal);
-
-  const dispatch = useDispatch();
-
   const handleOpenModal = () => {
     dispatch(openModal());
   };
@@ -87,6 +109,26 @@ function Navbar() {
   const handleCloseModal = () => {
     dispatch(closeModal());
   };
+
+  const settings = [
+    { name: "Change profile", onClick: () => {} },
+    {
+      name: "Logout",
+      onClick: () => {
+        userContxt.signOut();
+        dispatch(
+          setUser({
+            id: "",
+            username: "",
+            email: "",
+            isLoggedIn: false,
+            avatar: "",
+          })
+        );
+        handleCloseUserMenu();
+      },
+    },
+  ];
 
   return (
     <>
@@ -133,22 +175,20 @@ function Navbar() {
                 }}
               >
                 {pages.map(({ label, path }) => (
-                  <Link
-                    href={path}
-                    key={label}
-                    sx={{
-                      my: 2,
-                      color: `black`,
-                      padding: ".65rem",
-                      display: "block",
-                      textDecoration: "none",
-                      borderBottom: `${
-                        isLinkActive(path) ? "2px solid black" : ""
-                      }`,
+                  <a
+                    onClick={() => {
+                      navigate(path);
                     }}
+                    className={`cursor-pointer p-2
+                      ${
+                        isLinkActive(path)
+                          ? "border-b-2 border-black text-black"
+                          : ""
+                      }`}
+                    key={label}
                   >
                     {label}
-                  </Link>
+                  </a>
                 ))}
               </Box>
               <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -163,47 +203,67 @@ function Navbar() {
                   <MenuIcon />
                 </IconButton>
               </Box>
+              {!LoggedinUser && (
+                <Button
+                  name="sign-in"
+                  sx={{
+                    backgroundColor: "#101920 !important",
+                    borderRadius: "6px",
+                    fontSize: { xs: ".75rem", md: ".9rem" },
+                  }}
+                  variant="contained"
+                  onClick={handleOpenModal}
+                >
+                  sign in
+                </Button>
+              )}
 
-              <Button
-                name="sign-in"
-                sx={{
-                  backgroundColor: "#101920 !important",
-                  borderRadius: "6px",
-                  fontSize: { xs: ".75rem", md: ".9rem" },
-                }}
-                variant="contained"
-                onClick={handleOpenModal}
-              >
-                sign in
-              </Button>
-
-              <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/images/images.jpg" />
+              {LoggedinUser && (
+                <>
+                  <IconButton onClick={handleCartOpen}>
+                    <Badge badgeContent={Cart.length} color="warning">
+                      <ShoppingCartCheckout color="action" />
+                    </Badge>
                   </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                ></Menu>
-              </Box>
+                  <Box sx={{ flexGrow: 0 }}>
+                    <Tooltip title="Open settings">
+                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar
+                          alt="Remy Sharp"
+                          src={`${config().backend_url}/${User.avatar}`}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      sx={{ mt: "45px" }}
+                      id="menu-appbar"
+                      anchorEl={anchorElUser}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={Boolean(anchorElUser)}
+                      onClose={handleCloseUserMenu}
+                    >
+                      {settings.map((setting) => (
+                        <MenuItem key={setting.name} onClick={setting.onClick}>
+                          <ListItemText>{setting.name}</ListItemText>
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </Box>
+                </>
+              )}
             </Box>
           </Toolbar>
         </Container>
         <Sidebar closeModal={handleDrawerClose} isOpen={open} />
+        <CustomCart closeModal={handleCartClose} isOpen={isCartVisible} />
       </AppBar>
       {isModalOpen && (
         <CustomModal isOpen={isModalOpen.isOpen} closeModal={handleCloseModal}>
@@ -235,10 +295,10 @@ function Navbar() {
               </ThemeProvider>
             </Box>
             <TabPanel value="1">
-              <Signin />
+              <Signin closeModal={handleCloseModal} />
             </TabPanel>
             <TabPanel value="2">
-              <Signup />
+              <Signup setTabValue={setValue} />
             </TabPanel>
           </TabContext>
         </CustomModal>

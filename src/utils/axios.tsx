@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { config } from "./config/config";
 import { AppError } from "./error/AppError";
 
@@ -12,7 +12,26 @@ const throwError = (response: any) => {
 
 const axiosClient = axios.create({
   baseURL: config().backend_url,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
+
+axiosClient.interceptors.request.use(
+  (config: any) => {
+    if (config.headers["Content-Type"] === "multipart/form-data") {
+      config.headers = {
+        ...config.headers,
+        "Content-Type": "multipart/form-data",
+      };
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 const checkResponseStatus = (response: any, error: boolean = false) => {
   if (response === undefined) {

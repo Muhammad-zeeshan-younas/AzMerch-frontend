@@ -1,16 +1,25 @@
 import axiosClient from "../axios";
-
 import { TSigninInterface } from "../../types/SigninType";
-import { TSignupInterface } from "../../types/SignupType";
 
 const signup = async (user: any) => {
   try {
-    const response = await axiosClient.post("/user/registration", user);
+    const response = await axiosClient.post("/user/registration", user, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     return response;
   } catch (err) {}
 };
 
-const getUser = async () => {};
+const getUser = async () => {
+  try {
+    const response = await axiosClient.get("/user/session");
+
+    return response;
+  } catch (error: any) {}
+};
 
 const signin = async (user: TSigninInterface) => {
   try {
@@ -23,6 +32,14 @@ const signin = async (user: TSigninInterface) => {
   } catch (error: any) {}
 };
 
-const userContxt = { signup, signin, getUser };
+const signOut = async () => {
+  try {
+    const response = await axiosClient.delete("/user/delete-session");
+
+    return response;
+  } catch (error: any) {}
+};
+
+const userContxt = { signup, signin, getUser, signOut };
 
 export default userContxt;

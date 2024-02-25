@@ -3,13 +3,19 @@ import React from "react";
 import userContext from "../../utils/apis/userContext";
 import { TSigninInterface } from "../../types/SigninType";
 import { toast } from "react-toastify";
-import { CatchingPokemon } from "@mui/icons-material";
+import { setUser, user } from "../../Redux/reducers/slices/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 
-function Signin() {
+type SigninProps = {
+  closeModal: () => void;
+};
+
+function Signin({ closeModal }: SigninProps) {
   const [formState, setFormState] = React.useState<TSigninInterface>({
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -17,7 +23,10 @@ function Signin() {
       const response = await userContext.signin(formState);
 
       if (!response) return;
+
       toast.success("You are now logged in.");
+      dispatch(setUser({ ...response.data.user, isLoggedIn: true }));
+      closeModal();
     } catch (error) {}
   };
 

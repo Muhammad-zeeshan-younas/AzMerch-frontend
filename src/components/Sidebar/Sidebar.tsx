@@ -45,7 +45,7 @@ function Sidebar({ closeModal, isOpen }: Props) {
     alignItems: "center",
     fontSize: "1.4rem",
     fontFamily: "monospace",
-    background: "#031120",
+    background: "#101920",
     fontWeight: 700,
     color: "white",
     width: "100%",
@@ -97,10 +97,10 @@ function Sidebar({ closeModal, isOpen }: Props) {
                 }}
                 sx={{
                   backgroundColor: `${
-                    isLinkActive(path) ? "#1b2838" : " transparent"
+                    isLinkActive(path) ? "#101920" : " transparent"
                   }`,
                   borderBottom: `${
-                    isLinkActive(path) ? "4px solid #F7B900" : " transparent"
+                    isLinkActive(path) ? "2px solid #F7B900" : " transparent"
                   }`,
 
                   "&:hover": {

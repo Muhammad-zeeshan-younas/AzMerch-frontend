@@ -14,8 +14,11 @@ const dummyData = [
     src: "/images/image.jpg",
   },
 ];
+type Props = {
+  images: string[];
+};
 
-function SingleSlide() {
+function SingleSlide({ images }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const slideToNextImage = () => {
@@ -36,18 +39,18 @@ function SingleSlide() {
 
   return (
     <div>
-      <div className="flex mx-auto overflow-hidden relative h-52 sm:h-64 lg:h-96 rounded-xl">
+      <div className="flex mx-auto overflow-hidden relative h-64 sm:h-64 lg:h-96">
         <img
-          src={dummyData[activeIndex].src}
-          className="w-full object-cover"
+          src={`/${images[activeIndex]}`}
+          className="w-full object-fill"
           alt="slide show image"
         />
 
-        <div className="z-10 absolute w-full flex justify-between h-full items-center px-5">
+        <div className="z-10 absolute w-full flex justify-between h-full items-center px-1">
           <IconButton
             type="button"
             onClick={slideToPreviousImage}
-            sx={{ color: "black" }}
+            sx={{ color: "white" }}
           >
             <ChevronLeftIcon
               className="w-10 h-10 bg-gray-100/20 rounded-full p-2"
@@ -57,7 +60,7 @@ function SingleSlide() {
           <IconButton
             type="button"
             onClick={slideToNextImage}
-            sx={{ color: "black" }}
+            sx={{ color: "white" }}
           >
             <ChevronRightIcon
               className="w-10 h-10 bg-gray-100/20 rounded-full p-2"
@@ -65,18 +68,6 @@ function SingleSlide() {
             />
           </IconButton>
         </div>
-      </div>
-      <div className="flex gap-3 max-w-7xl justify-center py-2 mx-auto">
-        {dummyData.map((_, index) => (
-          <span
-            className="h-3 w-3 bg-black/50 rounded-full cursor-pointer"
-            key={index}
-            aria-selected={activeIndex == index ? "true" : "false"}
-            onClick={() => {
-              setActiveSlide(index);
-            }}
-          ></span>
-        ))}
       </div>
     </div>
   );
