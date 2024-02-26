@@ -22,12 +22,17 @@ function Signin({ closeModal }: SigninProps) {
     try {
       const response = await userContext.signin(formState);
 
-      if (!response) return;
+      if (!response) throw new Error("Login Failed");
 
       toast.success("You are now logged in.");
       dispatch(setUser({ ...response.data.user, isLoggedIn: true }));
       closeModal();
-    } catch (error) {}
+    } catch (error) {
+      setFormState((prevFormState) => ({
+        ...prevFormState,
+        password: "",
+      }));
+    }
   };
 
   return (

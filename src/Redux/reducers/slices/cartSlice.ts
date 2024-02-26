@@ -47,11 +47,6 @@ const cartSlice = createSlice({
       );
 
       state.forEach((item) => {
-        item.image = image;
-      });
-
-      // Update the state
-      state.forEach((item) => {
         item.quantity = totalQuantity;
         item.totalPrice = totalPrice;
       });
