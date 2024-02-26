@@ -52,8 +52,7 @@ const cartSlice = createSlice({
       });
     },
     clearCart: (state) => {
-      // Clear the cart by setting it to an empty array
-      return [];
+      state.splice(0, state.length);
     },
   },
 });

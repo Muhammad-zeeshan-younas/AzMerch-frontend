@@ -8,9 +8,11 @@ import {
   styled,
 } from "@mui/material";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { cart } from "../../Redux/reducers/slices/cartSlice";
+import { clearCart } from "../../Redux/reducers/slices/cartSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 type Props = {
   closeModal: () => void;
   isOpen: boolean;
@@ -18,6 +20,7 @@ type Props = {
 
 function CustomCart({ isOpen, closeModal }: Props) {
   const drawerWidth = 350;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const cartItems = useSelector(cart);
   const DrawerHeader = styled("div")(({ theme }) => ({
@@ -120,7 +123,8 @@ function CustomCart({ isOpen, closeModal }: Props) {
               variant="contained"
               fullWidth
               onClick={() => {
-                navigate("/checkout");
+                dispatch(clearCart());
+                toast.success("Thanks for paticipating in the demo");
               }}
             >
               Checkout
